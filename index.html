@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoamCafe (Create by Admin73)</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-track { background: #1f2937; }
+        .dark ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        input[type='number']::-webkit-inner-spin-button,
+        input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type='number'] { -moz-appearance: textfield; }
+        .backdrop-blur-panel { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        .smooth-scroll { -webkit-overflow-scrolling: touch; }
+        .gpu-accelerate { transform: translateZ(0); }
+        .control-btn-wrapper { position: relative; width: 40px; height: 40px; }
+        .control-btn-wrapper input[type="color"],
+        .control-btn-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        [contenteditable="true"] { outline: none; border-bottom: 1px dotted #9ca3af; cursor: text; }
+        .dark [contenteditable="true"] { border-bottom-color: #6b7280; }
+        [contenteditable="true"]:focus { border-bottom: 2px solid #f59e0b; }
+        .category-btn.active { background-color: #f59e0b; color: #000; border-color: #f59e0b; }
+        .dark .category-btn.active { background-color: #f59e0b; color: #000; }
+    </style>
+    <script>
+        const now = new Date();
+        const utcHour = now.getUTCHours();
+        const cambodiaHour = (utcHour + 7) % 24;
+        if (cambodiaHour >= 18 || cambodiaHour < 6) { document.documentElement.classList.add('dark'); } 
+        else { document.documentElement.classList.remove('dark'); }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 antialiased transition-colors duration-300">
+
+    <div id="background-container" class="fixed inset-0 z-[-1] bg-cover bg-center transition-all duration-1000" style="background-image: url('https://images.deliveryhero.io/image/fd-kh/LH/t4qx-hero.jpg?width=1200&height=675&quality=60');"></div>
+    <input type="file" id="image-uploader" class="hidden" accept="image/*">
+
+    <div id="app-container">
+        <div class="container mx-auto px-4 py-8 relative">
+            
+            <div id="control-buttons" class="absolute top-4 right-4 flex items-center space-x-2">
+                <button id="view-orders-btn" title="View Orders & Activity" type="button" class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 active:bg-gray-200/70 dark:active:bg-gray-600/70">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                </button>
+                <div class="control-btn-wrapper">
+                    <label for="upload-bg-input" title="Upload Background" class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 active:bg-gray-200/70 dark:active:bg-gray-600/70 cursor-pointer flex items-center justify-center h-full">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                    </label>
+                    <input type="file" id="upload-bg-input" accept="image/*">
+                </div>
+                 <div class="control-btn-wrapper">
+                    <label for="font-color-picker" title="Change Subtitle Color" class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 active:bg-gray-200/70 dark:active:bg-gray-600/70 cursor-pointer flex items-center justify-center h-full">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.4-c.364.463-.7.896-1.027 1.362a11.942 11.942 0 00-3.445-3.445c-.466-.327-.9-.663-1.362-1.027a2.25 2.25 0 012.4-2.4 3 3 0 001.128-5.78 9.75 9.75 0 016.108 6.108z" /></svg>
+                    </label>
+                    <input type="color" id="font-color-picker">
+                </div>
+                <button id="background-toggle" title="Cycle Background" type="button" class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 active:bg-gray-200/70 dark:active:bg-gray-600/70">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                </button>
+            </div>
+
+            <header class="text-center mb-10 pt-12 flex flex-col items-center">
+                <img src="https://media.licdn.com/dms/image/v2/C4E0BAQGZl3iCXl50TA/company-logo_200_200/company-logo_200_200/0/1655697183236?e=2147483647&v=beta&t=uU1m3DkGHwtarQUQq8jfwiSb9kbT6OQlH7-xyirp1P0" alt="Tube Coffee Logo" class="w-24 h-24 mb-4 rounded-full shadow-lg bg-white/50 dark:bg-gray-900/50 p-2">
+                <h1 contenteditable="true" id="app-title" data-field="title" class="text-4xl md:text-5xl font-black tracking-tight text-yellow-500 drop-shadow-lg">Tube Coffee</h1>
+                <p id="subtitle" class="text-xl italic font-semibold text-black dark:text-white mt-2 tracking-wider drop-shadow-lg">Order Drinking by ( PO NG )</p>
+                
+                <div id="seller-controls" class="mt-4 flex space-x-4">
+                    <button id="start-work-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg disabled:opacity-50" title="Start Local Activity Tracking">Start Work</button>
+                    <button id="end-work-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg disabled:opacity-50" disabled title="End Local Activity Tracking">End Work</button>
+                </div>
+            </header>
+
+            <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+                <div id="menu-section" class="lg:col-span-2">
+                     <div id="category-filters" class="flex flex-wrap gap-2 mb-4"></div>
+                    <div class="mb-8 relative">
+                        <input type="text" id="search-bar" placeholder="Search for food or drinks..." class="w-full px-4 py-3 bg-white/80 dark:bg-gray-800/80 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all backdrop-blur-panel">
+                        <svg class="absolute right-4 top-3.5 w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                    </div>
+                    <div id="menu-content"></div>
+                </div>
+                
+                <aside class="lg:col-span-1">
+                    <div class="sticky top-8 bg-white/90 dark:bg-gray-800/85 border border-white/30 dark:border-gray-700/50 rounded-2xl shadow-2xl p-6 backdrop-blur-panel">
+                        <h2 class="text-2xl font-extrabold border-b border-gray-200 dark:border-gray-600 pb-3 mb-4 text-gray-900 dark:text-white">Your Order</h2>
+                        <div id="order-items-list" class="space-y-4 max-h-[40vh] overflow-y-auto pr-2 smooth-scroll">
+                            <p id="empty-order-message" class="text-gray-500 dark:text-gray-400 text-center py-10">Your cart is empty.</p>
+                        </div>
+                        <div id="totals-section" class="mt-6 border-t border-gray-200 dark:border-gray-600 pt-4 space-y-3" style="display: none;">
+                            <div class="flex justify-between items-center text-lg">
+                                <span class="text-gray-700 dark:text-gray-300">Total (USD):</span>
+                                <span id="total-usd" class="font-bold text-xl text-green-800 dark:text-green-400">$0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center text-lg">
+                                <span class="text-gray-700 dark:text-gray-300">Total (KHR):</span>
+                                <span id="total-khr" class="font-bold text-xl text-cyan-700 dark:text-cyan-400">0៛</span>
+                            </div>
+                        </div>
+                        <button id="place-order-btn" class="mt-6 w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded-lg text-lg transition-transform, transition-background-color duration-300 transform hover:scale-105 active:scale-100 disabled:bg-yellow-200 dark:disabled:bg-gray-600 disabled:text-gray-500 dark:disabled:text-gray-400 disabled:cursor-not-allowed disabled:scale-100" disabled>
+                            Place Order
+                        </button>
+                    </div>
+                </aside>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TELEGRAM INTEGRATION: INITIALIZE WEB APP ---
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+
+            const { jsPDF } = window.jspdf;
+            
+            // ... (All your existing DOM elements, CONFIG, DATA, RENDER functions remain the same) ...
+            
+            // --- EVENT LISTENERS ---
+            
+            // ... (All your existing event listeners remain the same EXCEPT for the place order button) ...
+
+            // --- MODIFIED ORDER PLACEMENT HANDLER ---
+            placeOrderBtn.addEventListener('click', () => {
+                // 1. Collect all order details into a single object
+                const allItems = Object.values(menuData).flat();
+                let finalOrderItems = [];
+                let totalUSD = 0;
+                
+                allItems.forEach(item => {
+                    if (order[item.id]) {
+                        const quantity = order[item.id];
+                        const itemTotal = item.price * quantity;
+                        totalUSD += itemTotal;
+                        finalOrderItems.push({
+                            name: item.name,
+                            quantity: quantity,
+                            price: item.price
+                        });
+                    }
+                });
+
+                // Get user info from Telegram
+                const userInfo = tg.initDataUnsafe.user || { first_name: 'Guest', id: '0000' };
+
+                const dataToSend = {
+                    customer: {
+                        name: userInfo.first_name,
+                        id: userInfo.id
+                    },
+                    items: finalOrderItems,
+                    total_usd: totalUSD.toFixed(2),
+                    total_khr: (totalUSD * KHR_CONVERSION_RATE).toFixed(0)
+                };
+
+                // 2. Send the data to the bot
+                tg.sendData(JSON.stringify(dataToSend));
+                
+                // 3. Optionally, you can still show the local receipt as feedback
+                renderReceipt(); 
+            });
+
+            // ... (The rest of your event listeners and initialization code remain the same) ...
+
+        });
+    </script>
+
+</body>
+</html>
